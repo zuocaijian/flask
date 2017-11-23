@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css1.css') }}">
+</head>
+<body>
+{% if files %}
+    <h3>当前文数为：{{ len(files) }}</h3>
+    <table>
+        <tr>
+            <th>文件名</th>
+            <th>文件路径</th>
+            <th>文件大小</th>
+            <th>版本号</th>
+            <th>版本名</th>
+            <th>文件下载</th>
+        </tr>
+        {% for file in files %}
+            <tr>
+                <td>{{ file.filename }}</td>
+                <td>{{ file.path }}</td>
+                <td>{{ file.size }}</td>
+                <td>{{ file.version_code }}</td>
+                <td>{{ file.version_name }}</td>
+                <td><a href="{{ url_for('static', filename='files/'+file.filename) }}"></a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <h3>当前文数为：0</h3>
+{% endif %}
+</body>
+</html>
