@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择要上传的文件</title>
+</head>
+<script type="text/javascript">
+    function start_upload() {
+        var loading_bar = document.getElementById('loading');
+        loading_bar.style.visibility = 'visible';
+    }
+
+    function form_changed(id) {
+        var msg = '';
+        switch (id) {
+            case 'apk':
+                var apk_view = document.getElementById('apk');
+                msg = 'apk name = ' + get_filename_by_path(apk_view.value);
+                break;
+            case 'R':
+                var R_view = document.getElementById('R');
+                msg = 'R name = ' + get_filename_by_path(R_view.value);
+                break;
+            case 'mapping':
+                var mapping_view = document.getElementById('mapping');
+                msg = 'mapping name = ' + get_filename_by_path(mapping_view.value);
+                break;
+            case 'v_code':
+                var v_code_view = document.getElementById('v_code');
+                msg = 'v_code = ' + get_filename_by_path(v_code_view.value)
+                break;
+            case 'v_name':
+                var v_name_view = document.getElementById('v_name');
+                msg = 'v_name = ' + get_filename_by_path(v_name_view.value)
+                break;
+            default:
+                break;
+        }
+        alert(msg);
+    }
+
+    function get_filename_by_path(path) {
+        var filename = path.substring(path.lastIndexOf('\\') + 1, path.length)
+        return filename;
+    }
+
+    function upload_the_file(url) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            xmlhttp = new ActiveXObject('Mocrosoft.XMLHTTP');
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                alert(xmlhttp.responseText);
+            }
+        }
+
+        xmlhttp.open('GET', url, true);
+        xmlhttp.send()
+    }
+</script>
+<body>
+<form enctype="multipart/form-data" method="post" action="">
+    请选择要上传的apk文件：<input id="apk" type="file" name="file_apk" onchange="form_changed(this.id)"><br/>
+    请选择要上传的R文件：<input id="R" type="file" name="file_R" onchange="form_changed(this.id)"><br/>
+    请选择要上传的mapping文件：<input id="mapping" type="file" name="file_mapping" onchange="form_changed(this.id)"><br/>
+    请输入版本号：<input id="v_code" type="number" onchange="form_changed(this.id)"><br/>
+    请输入版本名：<input id="v_name" type="text" onchange="form_changed(this.id)"><br/>
+
+    <input type="submit" value="开始上传" onclick="start_upload()">
+</form>
+<label id="loading" style="color: #aa1111; visibility: hidden">正在上传中...</label>
+</body>
+</html>

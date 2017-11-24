@@ -114,14 +114,15 @@ def down_file(filename):
 
 @app.route('/upload')
 def upload_file():
-    result = {}
-    result['code'] = 200
-    result['status'] = 'OK'
-    result['data'] = []
-    files = request.files
-    if files:
-        for file in files:
-            if file:
-                filename = secure_filename(file.filename)
-                result['data'].append(filename)
-    return make_response(jsonify(result))
+    # result = {}
+    # result['code'] = 200
+    # result['status'] = 'OK'
+    # result['data'] = []
+    # files = request.files
+    # if files:
+    #     for file in files:
+    #         if file:
+    #             filename = secure_filename(file.filename)
+    #             result['data'].append(filename)
+    # return make_response(jsonify(result))
+    return render_template('upload_file.html')
