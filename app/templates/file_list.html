@@ -7,7 +7,7 @@
 </head>
 <body>
 {% if files %}
-    <h3>当前文数为：{{ len(files) }}</h3>
+    <h3>当前文数为：{{ files|length }}</h3>
     <table>
         <tr>
             <th>文件名</th>

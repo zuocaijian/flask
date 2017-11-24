@@ -10,7 +10,7 @@ __author__ = 'zcj'
 
 import os
 
-from flask import render_template, g, redirect, url_for, make_response, request, jsonify, session, abort, flash
+from flask import render_template, g, redirect, url_for, make_response, request, session, abort, flash
 from werkzeug.utils import secure_filename
 
 from app import app
@@ -114,15 +114,34 @@ def down_file(filename):
 
 @app.route('/upload')
 def upload_file():
-    # result = {}
-    # result['code'] = 200
-    # result['status'] = 'OK'
-    # result['data'] = []
-    # files = request.files
-    # if files:
-    #     for file in files:
-    #         if file:
-    #             filename = secure_filename(file.filename)
-    #             result['data'].append(filename)
-    # return make_response(jsonify(result))
     return render_template('upload_file.html')
+
+
+@app.route('/upload_process', methods=['POST'])
+def process_upload():
+    # 获取版本号和版本名
+    v_code = request.form['v_code']
+    v_name = request.form['v_name']
+    print('the version code is %s, and version name is %s' % (v_code, v_name))
+    base_dir = os.path.dirname(__file__)
+    # 1、获取所有文件名及路径
+    files = request.files.to_dict()
+    if files:
+        for k, v in files.items():
+            file = v
+            if file:
+                filename = secure_filename(file.filename)
+                path = os.path.join(base_dir, 'static', 'files', filename)
+                print('the filename is %s, and the save path will be %s' % (filename, path))
+                # todo 查询数据库，如果已经有了，则不需要在保存和插入到数据库
+                # 2、保存文件
+                file.save(path)
+                # 3、插入数据库
+                g.db.execute(
+                    'INSERT INTO files (filename, path, size, url, version_code, version_name) VALUES (?,?,?,?,?,?)',
+                    [filename, path, os.path.getsize(path), path, v_code, v_name])
+    # 4、查询数据库，并返回页面
+    cursor = g.db.execute('SELECT * FROM files')
+    g.db.commit()
+    file_list = cursor.fetchall()
+    return render_template('file_list.html', tile='所有文件列表', files=file_list)

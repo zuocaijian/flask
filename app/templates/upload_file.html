@@ -36,7 +36,7 @@
             default:
                 break;
         }
-        alert(msg);
+        // alert(msg);
     }
 
     function get_filename_by_path(path) {
@@ -63,12 +63,12 @@
     }
 </script>
 <body>
-<form enctype="multipart/form-data" method="post" action="">
+<form enctype="multipart/form-data" method="post" action="/upload_process">
     请选择要上传的apk文件：<input id="apk" type="file" name="file_apk" onchange="form_changed(this.id)"><br/>
     请选择要上传的R文件：<input id="R" type="file" name="file_R" onchange="form_changed(this.id)"><br/>
     请选择要上传的mapping文件：<input id="mapping" type="file" name="file_mapping" onchange="form_changed(this.id)"><br/>
-    请输入版本号：<input id="v_code" type="number" onchange="form_changed(this.id)"><br/>
-    请输入版本名：<input id="v_name" type="text" onchange="form_changed(this.id)"><br/>
+    请输入版本号：<input id="v_code" type="number" name="v_code" onchange="form_changed(this.id)"><br/>
+    请输入版本名：<input id="v_name" type="text" name="v_name" onchange="form_changed(this.id)"><br/>
 
     <input type="submit" value="开始上传" onclick="start_upload()">
 </form>
