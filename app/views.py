@@ -10,7 +10,7 @@ __author__ = 'zcj'
 
 import os
 
-from flask import render_template, g, redirect, url_for, make_response, request, jsonify
+from flask import render_template, g, redirect, url_for, make_response, request, jsonify, session, abort, flash
 from werkzeug.utils import secure_filename
 
 from app import app
@@ -37,6 +37,45 @@ def url_not_found(e):
 @app.route('/')
 def index():
     return render_template('index.html', title='欢迎来到文件管理首页')
+
+
+@app.route('/user')
+def show_user():
+    cur = g.db.execute('SELECT name, password FROM user ORDER BY id DESC')
+    users = [dict(name=row[0], password=row[1]) for row in cur.fetchall()]
+    return render_template('show_users.html', users=users)
+
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    if not session.get('logged_in'):
+        abort(401)
+    g.db.execute('INSERT INTO user (name, password) VALUES (?, ?)', [request.form['name'], request.form['password']])
+    g.db.commit()
+    flash('New user was successfully posted')
+    return redirect(url_for('show_entries'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['name'] != app.config['USERNAME']:
+            error = 'Invalid username'
+        elif request.form['password'] != app.config['PASSWORD']:
+            error = 'Invalid password'
+        else:
+            session['logged_in'] = True
+            flash('You were logged in')
+            return redirect(url_for('show_user'))
+    return render_template('login.html', error=error)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('show_user'))
 
 
 @app.route('/<file>')

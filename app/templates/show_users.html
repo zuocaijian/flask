@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if session.logged_id %}
+<form action="{{ url_for('add_user') }}" method="post" class="add-entry">
+    <dl>
+        <dt>User:
+        <dd><input type="text" size="30" name="title"></dd>
+        </dt>
+        <dt>Password:
+        <dd><textarea name="text" rows="5" cols="40"></textarea></dd>
+        </dt>
+        <dd><input type="submit" value="Share"></dd>
+    </dl>
+</form>
+{% endif %}
+<ul class="users">
+    {% for user in users %}
+    <li><h2>{{ user.name }}</h2>{{ user.password|safe }}</li>
+    {% else %}
+    <li><em>Unbelieveable. No user here so far.</em></li>
+    {% endfor %}
+</ul>
+{% endblock %}
